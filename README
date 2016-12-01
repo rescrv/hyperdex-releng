@@ -1,0 +1,3 @@
+./setup-docker
+minion -d .. sync-sources
+minion -d .. build dev

@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+
+import binascii
+import os
+import os.path
+import re
+import subprocess
+
+PACKAGERS = [
+    ('rescrv/centos-6-mock', 'pkg/centos6'),
+    ('rescrv/centos-7-mock', 'pkg/centos7'),
+    ('rescrv/debian-wheezy-pbuilder', 'pkg/debian7'),
+    ('rescrv/fedora-20-mock', 'pkg/fedora20'),
+    ('rescrv/fedora-21-mock', 'pkg/fedora21'),
+    ('rescrv/fedora-22-mock', 'pkg/fedora22'),
+    ('rescrv/ubuntu-precise-pbuilder', 'pkg/ubuntu12.04'),
+    ('rescrv/ubuntu-trusty-pbuilder', 'pkg/ubuntu14.04'),
+]
+
+os.chdir(os.path.dirname(__file__))
+
+subprocess.check_call(('docker', 'build', '-t', 'rescrv/dist', 'dist'))
+subprocess.check_call(('docker', 'pull', 'rescrv/texlive-2015'))
+
+for name, docker in PACKAGERS:
+    out = subprocess.check_output(('docker', 'images'))
+    out = out.decode('utf8', 'ignore')
+    if name in out:
+        continue
+    out = subprocess.check_output(('docker', 'build', docker))
+    out = out.decode('utf8', 'ignore')
+    m = re.search('Successfully built ([0-9A-Fa-f]+)', out)
+    if not m:
+        raise RuntimeError("couldn't determine docker image id")
+    rand = binascii.hexlify(os.urandom(8)).decode('ascii')
+    subprocess.check_call(('docker', 'run', '--privileged', '-t', '-i',
+                           '--name', rand, m.group(1)))
+    subprocess.check_call(('docker', 'commit', rand, name))

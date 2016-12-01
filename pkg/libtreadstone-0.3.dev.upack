@@ -1,0 +1,31 @@
+package libtreadstone
+| source="libtreadstone"
+| debian name="libtreadstone1"
+| version="0.3.dev"
+| release="1"
+| license="BSD"
+| copyright="2014 Robert Escriva"
+| homepage="http://hyperdex.org"
+| tarball="http://hyperdex.org/src/libtreadstone-{version}.tar.gz"
+| debian section="libs"
+| configure="--disable-static"
+| build-requires="{pkg-config}, libpo6-{dev}, libe-{dev}"
+| summary="Treadstone manipulates JSON"
++ {libdir}/libtreadstone.so.1
++ {libdir}/libtreadstone.so.1.0.0
+'''{summary}'''
+
+subpackage libtreadstone-dev
+| name="libtreadstone-{dev}"
+| debian requires="libtreadstone1{self}"
+| fedora requires="libtreadstone{self}"
++ {includedir}/treadstone.h
++ {libdir}/pkgconfig/libtreadstone.pc
++ {libdir}/libtreadstone.so
+'''{summary}'''
+
+exclude {libdir}/libtreadstone.la
+
+context
+| debian pkg-config="pkg-config"
+| fedora pkg-config="pkgconfig"

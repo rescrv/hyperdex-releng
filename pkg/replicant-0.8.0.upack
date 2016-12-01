@@ -1,0 +1,95 @@
+package replicant
+| source="replicant"
+| debian section="net"
+| version="0.8.0"
+| release="1"
+| license="BSD"
+| copyright="2012-2015 Robert Escriva"
+| homepage="http://hyperdex.org"
+| tarball="http://hyperdex.org/src/replicant-{version}.tar.gz"
+| configure="--disable-static"
+| summary="A replicated state machine service"
+| build-requires="{pkg-config}, {popt-dev}, {glog-dev}, {sparsehash-dev}, libpo6-{dev}, libe-{dev}, libbusybee-{dev}"
+| requires="replicant-daemon, replicant-tools"
+'''{summary}'''
+
+subpackage replicant-common
+| summary="The \"replicant\" command"
++ {bindir}/replicant
+'''{summary}'''
+
+subpackage replicant-daemon
+| summary="The daemon for replicant"
+| requires="replicant-common"
++ {libexecdir}/replicant-{version}/replicant-daemon
++ {libexecdir}/replicant-{version}/replicant-rsm-dlopen
+'''{summary}'''
+
+subpackage replicant-tools
+| summary="Tools for managing a replicant cluster"
+| requires="replicant-common"
++ {libexecdir}/replicant-{version}/replicant-backup-object
++ {libexecdir}/replicant-{version}/replicant-conn-str
++ {libexecdir}/replicant-{version}/replicant-debug
++ {libexecdir}/replicant-{version}/replicant-debug-call
++ {libexecdir}/replicant-{version}/replicant-debug-condition
++ {libexecdir}/replicant-{version}/replicant-debug-defended-call
++ {libexecdir}/replicant-{version}/replicant-del-object
++ {libexecdir}/replicant-{version}/replicant-generate-unique-number
++ {libexecdir}/replicant-{version}/replicant-kill-object
++ {libexecdir}/replicant-{version}/replicant-kill-server
++ {libexecdir}/replicant-{version}/replicant-list-objects
++ {libexecdir}/replicant-{version}/replicant-new-object
++ {libexecdir}/replicant-{version}/replicant-poke
++ {libexecdir}/replicant-{version}/replicant-restore-object
+'''{summary}'''
+
+subpackage libreplicant
+| debian name="libreplicant2"
+| debian section="libs"
+| summary="Client bindings for replicant"
++ {libdir}/libreplicant.so.2
++ {libdir}/libreplicant.so.2.0.2
+'''{summary}'''
+
+subpackage libreplicant-devel
+| debian name="libreplicant-dev"
+| debian section="libdevel"
+| debian requires="libreplicant2"
+| fedora requires="libreplicant"
+| summary="Client bindings for replicant (development files)"
++ {includedir}/replicant.h
++ {libdir}/libreplicant.so
++ {libdir}/pkgconfig/replicant.pc
+'''{summary}'''
+
+subpackage librsm
+| debian name="librsm1"
+| debian section="libs"
+| summary="Library for building state machines"
++ {libdir}/librsm.so.0
++ {libdir}/librsm.so.0.0.0
+'''{summary}'''
+
+subpackage librsm-devel
+| debian name="librsm-dev"
+| debian section="libdevel"
+| debian requires="librsm1"
+| fedora requires="librsm"
+| summary="Library for building state machines (development files)"
++ {includedir}/rsm.h
++ {libdir}/librsm.so
+'''{summary}'''
+
+exclude {libdir}/libreplicant.la
+exclude {libdir}/librsm.la
+
+context
+| deb pkg-config="pkg-config"
+| rpm pkg-config="pkgconfig"
+| deb popt-dev="libpopt-dev"
+| rpm popt-dev="popt-devel"
+| deb glog-dev="libgoogle-glog-dev"
+| rpm glog-dev="glog-devel, gflags-devel"
+| deb sparsehash-dev="libsparsehash-dev"
+| rpm sparsehash-dev="sparsehash-devel"
